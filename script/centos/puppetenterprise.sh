@@ -31,6 +31,6 @@ yum install -y pe-agent
 /opt/puppet/bin/puppet resource service pe-puppet ensure=stopped enable=false
 /opt/puppet/bin/puppet resource service pe-mcollective ensure=stopped enable=false
 
-mv /opt/pe_kickstart/prosvcs-er-${RE_BUILD}/modules/* /opt/puppet/share/puppet/modules/
+mv /opt/pe_kickstart/prosvcs-er-${ER_BUILD}/modules/* /opt/puppet/share/puppet/modules/
 
 rm -rf /opt/pe_kickstart
