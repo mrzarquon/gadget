@@ -84,6 +84,8 @@ mkdir -p /opt/puppet/packages/public/${PE_BUILD}
 mv /opt/pe_kickstart/puppet-enterprise-${PE_BUILD}-el-6-x86_64/gpg/GPG-KEY-puppetlabs /opt/puppet/packages/public/GPG-KEY-puppetlabs
 mv /opt/pe_kickstart/puppet-enterprise-${PE_BUILD}-el-6-x86_64/packages/el-6-x86_64 /opt/puppet/packages/public/${PE_BUILD}/puppet-enterprise-installer
 
+rm -rf /opt/pe_kickstart
+
 mkdir -p /etc/yum.repos.d
 
 echo > /etc/yum.repos.d/puppet-enterprise-installer.repo << PE_REPO
