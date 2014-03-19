@@ -1,0 +1,73 @@
+{
+  "variables": {
+    "provisioner": "nocm",
+    "provisioner_version": "",
+    "iso_url": "http://mirrors.kernel.org/centos/6.5/isos/x86_64/CentOS-6.5-x86_64-bin-DVD1.iso",
+    "iso_checksum": "32c7695b97f7dcd1f59a77a71f64f2957dddf738"
+  },
+  "builders": [{
+    "vm_name": "centos65",
+    "type": "vmware-iso",
+    "guest_os_type": "centos-64",
+    "http_directory": "http/centos",
+    "iso_url": "{{ user `iso_url` }}",
+    "iso_checksum": "{{ user `iso_checksum` }}",
+    "iso_checksum_type": "sha1",
+    "output_directory": "centos65-puppet-vmware",
+    "ssh_username": "gadget",
+    "ssh_password": "puppetlabs",
+    "ssh_wait_timeout": "10000s",
+    "tools_upload_flavor": "linux",
+    "boot_command": [
+      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/deploy.cfg<enter>"
+    ],
+    "shutdown_command": "echo 'puppetlabs'|sudo -S shutdown -P now",
+    "disk_type_id": 0,
+    "disk_size": 160140,
+    "vmx_data": {
+      "memsize": "2048",
+      "numvcpus": "2",
+      "cpuid.coresPerSocket": "1"
+    }
+  },
+  {
+    "vm_name": "centos65",
+    "type": "virtualbox-iso",
+    "http_directory": "http/centos",
+    "iso_url": "{{ user `iso_url` }}",
+    "iso_checksum": "{{ user `iso_checksum` }}",
+    "iso_checksum_type": "sha1",
+    "guest_os_type": "RedHat_64",
+    "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+    "output_directory": "centos65-puppet-virtualbox",
+    "virtualbox_version_file": ".vbox_version",
+    "ssh_username": "gadget",
+    "ssh_password": "puppetlabs",
+    "ssh_wait_timeout": "10000s",
+    "boot_command": [
+      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/deploy.cfg<enter>"
+    ],
+    "shutdown_command": "echo 'puppetlabs'|sudo -S shutdown -P now",
+    "disk_size": 160140,
+    "vboxmanage": [
+      ["modifyvm", "{{.Name}}", "--memory", "2048"],
+      ["modifyvm", "{{.Name}}", "--cpus", "2"]
+    ]
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "environment_vars": [
+      "PROVISIONER={{user `provisioner`}}"
+    ],
+    "execute_command": "echo 'puppetlabs' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+    "scripts": [
+      "script/centos/base.sh",
+      "script/centos/sshd.sh",
+      "script/centos/vmtools.sh",
+      "script/centos/provisioner.sh",
+      "script/centos/puppetenterprise.sh",
+      "script/centos/cleanup.sh",
+      "script/centos/zerodisk.sh"
+    ]
+  }]
+}
